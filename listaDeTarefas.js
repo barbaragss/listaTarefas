@@ -1,20 +1,39 @@
 (() => { //bloqueando o acesso ao conteúdo no console. IIFE - funcao de execução imediata. Colocando todo o arquivo dentro de um escopo fde função. (() => {} )()
     
-    const criarTarefa = (evento) => {
+    const novoItem = (evento) =>{
+        
+        evento.preventDefault()  //prevenindo comportamento padrão. Aqui estamos evitando que a pagina recarregue evitando que osdados sejam eviados
 
-    evento.preventDefault() //prevenindo comportamento padrão. Aqui estamos evitando que a pagina recarregue evitando que osdados sejam eviados
+        const lista = document.querySelector('[data-list]')//buscando o elemento UL
 
-    const lista = document.querySelector('[data-list]')//buscando o elemento UL
+        const input = document.querySelector('[data-form-input]') //capturando o input e não o seu valor
+    
+        const valor = input.value // acessando o valor que foi digitado no input e atribuindo a variavel valor
+    
+        const calendario = document.querySelector('[data-form-date]')
+    
+        const data = moment(calendario.value)
+    
+        const dataFormatada = (data.format('DD/MM/YYYY'))
 
-    const input = document.querySelector('[data-form-input]') //capturando o input e não o seu valor
+        const dados = {valor, dataFormatada}
 
-    const valor = input.value // acessando o valor que foi digitado no input e atribuindo a variavel valor
+        const criaTarefa = criarTarefa (dados)
+
+        lista.appendChild(criaTarefa)//anexando um elemento dentro do outro, nesse caso, colocando uma li dentro da ul. Aqui está adicionando uma tarefa ao final do nó.
+
+        input.value = " "//limpando o input
+
+    }
+
+
+    const criarTarefa = ({valor, dataFormatada}) => {
 
     const tarefa = document.createElement ('li')//criando uma li e colocando na variavel tarefa
 
     tarefa.classList.add ('task') //Adicionando uma classe css, nesse caso, estamos adicionando uma classe ao li que foi criado e armazenado na variavel tarefa.
 
-    const conteudo = `<P class ="content">${valor}</P>` //criando um parágrafo. Interpolando cod HTML com JS. Aqui selecionamos a li e criamos um modelo de paragrafo
+    const conteudo = `<P class ="content">${dataFormatada} - ${valor}</P>` //criando um parágrafo. Interpolando cod HTML com JS. Aqui selecionamos a li e criamos um modelo de paragrafo
 
     tarefa.innerHTML = conteudo //colocando o paragrafo dentro da li. Dessa forma, estamos acessando o conteudo do elemento
     
@@ -22,17 +41,13 @@
 
     tarefa.appendChild(BotaoDeleta())// irá adicionar um botao dentro da tarefa que nesse caso, é a li, pois ela é quem está armazenada na variavel tarefa.
 
-    lista.appendChild(tarefa)//anexando um elemento dentro do outro, nesse caso, colocando uma li dentro da ul. Aqui está adicionando uma tarefa ao final do nó.
-    input.value = " "//limpando o input
-
-    
-
+    return tarefa
 }
 
 
 const novaTarefa = document.querySelector('[data-form-button]') //capturando o botão
 
-novaTarefa.addEventListener('click', criarTarefa) //addEventListener () permite configurar funções a serem chamadas quando um evento especificado acontece, como quando um usuário clica em um botão. Neste caso, a função "criarTarefa" será execultada ao ser clicada por meio de um botão, já que novaTarefa vem de uma captura de botão.
+novaTarefa.addEventListener('click', novoItem) //addEventListener () permite configurar funções a serem chamadas quando um evento especificado acontece, como quando um usuário clica em um botão. Neste caso, a função "criarTarefa" será execultada ao ser clicada por meio de um botão, já que novaTarefa vem de uma captura de botão.
 
 const BotaoConclui = () => { //componente 
     const botaoConclui = document.createElement('button') //criando um botao de concluir
